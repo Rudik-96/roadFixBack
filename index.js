@@ -1,17 +1,16 @@
-const express = require('express');
+const express = require("express");
+const open = require("open");
+
 const app = express();
-const PORT = 4000;
+const PORT = 3000;
+const URL_TO_OPEN = "https://example.com"; // Замените на нужный URL
 
-app.get('/home', (req, res) => {
-    res.status(200).json('Welcome, your app is working well');
+app.get("/start", (req, res) => {
+    open(URL_TO_OPEN);
+    res.send("Вкладка открыта!");
 });
-
-app.get("/", (req, res) => {
-    res.status(200).json('Welcome, your app is working well');
-})
 
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Сервер запущен на http://localhost:${PORT}`);
+    open(`http://localhost:${PORT}/start`); // Автоматически открывает вкладку при запуске
 });
-
-module.exports = app;
