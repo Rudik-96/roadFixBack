@@ -26,4 +26,3 @@ app.listen(PORT, async () => {
     const open = (await import("open")).default;
     open(`http://localhost:${PORT}/start?chat_id=YOUR_CHAT_ID`, { wait: false });
 });
-s
