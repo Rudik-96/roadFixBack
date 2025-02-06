@@ -1,5 +1,5 @@
 const express = require("express");
-const open = require("open");
+import open from "open";
 const TelegramBot = require("node-telegram-bot-api");
 
 const app = express();
