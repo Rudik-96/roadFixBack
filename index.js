@@ -10,8 +10,9 @@ const API_URL = `https://api.telegram.org/bot${TOKEN}`;
 app.use(express.json());
 
 app.post(`/webhook/${TOKEN}`, async (req, res) => {
-    const update = req.body;
+    console.log("📩 Получен апдейт от Telegram:", JSON.stringify(req.body, null, 2));
 
+    const update = req.body;
     if (update.message && update.message.text === "/start") {
         const chatId = update.message.chat.id;
 
@@ -34,6 +35,7 @@ app.post(`/webhook/${TOKEN}`, async (req, res) => {
 
     res.sendStatus(200);
 });
+
 
 // Запуск сервера
 app.listen(PORT, () => {
