@@ -17,7 +17,7 @@ app.post(`/webhook/${TOKEN}`, async (req, res) => {
 
         const replyMarkup = {
             inline_keyboard: [[
-                { text: "🎥 Открыть YouTube", web_app: { url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" } }
+                { text: "🎥 Открыть YouTube", web_app: { url: "https://roadfix-c0996.web.app/" } }
             ]]
         };
 
@@ -36,9 +36,8 @@ app.post(`/webhook/${TOKEN}`, async (req, res) => {
 });
 
 // Запуск сервера
-app.listen(PORT, async () => {
+app.listen(PORT, () => {
     console.log(`✅ Бот запущен на порту ${PORT}`);
-
-    // Устанавливаем вебхук для Telegram
-    await fetch(`${API_URL}/setWebhook?url=${process.env.SERVER_URL}/webhook/${TOKEN}`);
 });
+
+
