@@ -55,3 +55,17 @@ app.post("/webhook", async (req, res) => {
 app.listen(PORT, () => {
     console.log(`✅ Бот запущен на порту ${PORT}`);
 });
+
+process.on("SIGTERM", () => {
+    console.log("⚠️ Получен сигнал SIGTERM, сервер завершается...");
+    process.exit(0);
+});
+
+process.on("uncaughtException", (err) => {
+    console.error("❌ Uncaught Exception:", err);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+    console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
+});
+
