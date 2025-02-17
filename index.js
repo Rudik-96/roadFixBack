@@ -1,6 +1,6 @@
 const express = require("express");
 const fetch = require("node-fetch");
-const pool = require("./db"); // Подключение к PostgreSQL
+const pool = require("./config/db"); // Подключение к PostgreSQL
 require("dotenv").config();
 
 const app = express();
