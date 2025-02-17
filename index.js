@@ -9,21 +9,14 @@ const API_URL = `https://api.telegram.org/bot${TOKEN}`;
 
 app.use(express.json());
 
-// Логирование входящих запросов
+// Логируем все входящие запросы
 app.use((req, res, next) => {
     console.log(`📥 Запрос: ${req.method} ${req.url}`);
     next();
 });
 
-// Маршрут для обработки вебхука
-app.post("/webhook/:token", async (req, res) => {
-    const token = req.params.token;
-
-    if (token !== TOKEN) {
-        console.warn("⚠️ Неверный токен в вебхуке!");
-        return res.sendStatus(403);
-    }
-
+// 📌 Принимаем вебхук по `/webhook`, без токена в URL
+app.post("/webhook", async (req, res) => {
     console.log("📩 Получен апдейт от Telegram:", JSON.stringify(req.body, null, 2));
 
     const update = req.body;
@@ -56,15 +49,6 @@ app.post("/webhook/:token", async (req, res) => {
     }
 
     res.sendStatus(200);
-});
-
-// Обработчик ошибок (чтобы сервер не падал)
-process.on("uncaughtException", (err) => {
-    console.error("❌ Uncaught Exception:", err);
-});
-
-process.on("unhandledRejection", (reason, promise) => {
-    console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
 });
 
 // Запуск сервера
