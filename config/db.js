@@ -10,6 +10,9 @@ const pool = new Pool({
 
 pool.connect()
     .then(() => console.log("✅ PostgreSQL connected"))
-    .catch(err => console.error("❌ Ошибка подключения к PostgreSQL:", err));
+    .catch(err => {
+        console.error("❌ Ошибка подключения к PostgreSQL:", err);
+        process.exit(1); // Безопасное завершение, если база не подключается
+    });
 
 module.exports = pool;

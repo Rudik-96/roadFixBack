@@ -37,6 +37,7 @@ app.post(`/webhook/${TOKEN}`, async (req, res) => {
 });
 
 
+
 // Запуск сервера
 app.listen(PORT, () => {
     console.log(`✅ Бот запущен на порту ${PORT}`);
