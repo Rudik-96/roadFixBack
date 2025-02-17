@@ -1,5 +1,6 @@
 const express = require("express");
 const fetch = require("node-fetch");
+const pool = require("./db"); // Подключение к PostgreSQL
 require("dotenv").config();
 
 const app = express();
@@ -9,13 +10,13 @@ const API_URL = `https://api.telegram.org/bot${TOKEN}`;
 
 app.use(express.json());
 
-// Логируем все входящие запросы
+// Логирование входящих запросов
 app.use((req, res, next) => {
     console.log(`📥 Запрос: ${req.method} ${req.url}`);
     next();
 });
 
-// 📌 Принимаем вебхук по `/webhook`, без токена в URL
+// 📌 Вебхук теперь работает по `/webhook` (без токена)
 app.post("/webhook", async (req, res) => {
     console.log("📩 Получен апдейт от Telegram:", JSON.stringify(req.body, null, 2));
 
@@ -51,11 +52,7 @@ app.post("/webhook", async (req, res) => {
     res.sendStatus(200);
 });
 
-// Запуск сервера
-app.listen(PORT, () => {
-    console.log(`✅ Бот запущен на порту ${PORT}`);
-});
-
+// 📌 Обработчик ошибок и завершения работы сервера
 process.on("SIGTERM", () => {
     console.log("⚠️ Получен сигнал SIGTERM, сервер завершается...");
     process.exit(0);
@@ -69,3 +66,7 @@ process.on("unhandledRejection", (reason, promise) => {
     console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
 });
 
+// 📌 Сервер слушает все подключения (0.0.0.0)
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`✅ Бот запущен на порту ${PORT}`);
+});
