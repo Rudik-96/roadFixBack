@@ -9,7 +9,21 @@ const API_URL = `https://api.telegram.org/bot${TOKEN}`;
 
 app.use(express.json());
 
-app.post(`/webhook/${TOKEN}`, async (req, res) => {
+// Логирование входящих запросов
+app.use((req, res, next) => {
+    console.log(`📥 Запрос: ${req.method} ${req.url}`);
+    next();
+});
+
+// Маршрут для обработки вебхука
+app.post("/webhook/:token", async (req, res) => {
+    const token = req.params.token;
+
+    if (token !== TOKEN) {
+        console.warn("⚠️ Неверный токен в вебхуке!");
+        return res.sendStatus(403);
+    }
+
     console.log("📩 Получен апдейт от Telegram:", JSON.stringify(req.body, null, 2));
 
     const update = req.body;
@@ -22,25 +36,38 @@ app.post(`/webhook/${TOKEN}`, async (req, res) => {
             ]]
         };
 
-        await fetch(`${API_URL}/sendMessage`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                chat_id: chatId,
-                text: "Нажми на кнопку ниже, чтобы открыть видео 🎬",
-                reply_markup: replyMarkup
-            })
-        });
+        try {
+            const response = await fetch(`${API_URL}/sendMessage`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: "Нажми на кнопку ниже, чтобы открыть видео 🎬",
+                    reply_markup: replyMarkup
+                })
+            });
+
+            const data = await response.json();
+            console.log("📤 Ответ Telegram API:", data);
+
+        } catch (error) {
+            console.error("❌ Ошибка при отправке сообщения:", error);
+        }
     }
 
     res.sendStatus(200);
 });
 
+// Обработчик ошибок (чтобы сервер не падал)
+process.on("uncaughtException", (err) => {
+    console.error("❌ Uncaught Exception:", err);
+});
 
+process.on("unhandledRejection", (reason, promise) => {
+    console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
+});
 
 // Запуск сервера
 app.listen(PORT, () => {
     console.log(`✅ Бот запущен на порту ${PORT}`);
 });
-
-
