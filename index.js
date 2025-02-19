@@ -1,6 +1,5 @@
 const express = require("express");
 const fetch = require("node-fetch");
-const pool = require("./config/db"); // Подключение к PostgreSQL
 require("dotenv").config();
 console.log("🔍 DATABASE_URL из .env:", process.env.DATABASE_URL);
 
@@ -52,26 +51,6 @@ app.post("/webhook", async (req, res) => {
 
     res.sendStatus(200);
 });
-
-// 📌 Обработчик ошибок и завершения работы сервера
-process.on("SIGTERM", () => {
-    console.log("⚠️ Получен сигнал SIGTERM, сервер завершается...");
-    process.exit(0);
-});
-
-process.on("uncaughtException", (err) => {
-    console.error("❌ Uncaught Exception:", err);
-});
-
-process.on("unhandledRejection", (reason, promise) => {
-    console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
-});
-
-// 📌 Сервер слушает все подключения (0.0.0.0)
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(`✅ Бот запущен на порту ${PORT}`);
-});
-
 // postgresql://postgres:roadFix2025@postgres.railway.internal:5432/railway
 // postgresql://postgres:roadFix2025@postgres.railway.internal:5432/railway
 // postgresql://postgres:roadFix2025@postgres.railway.internal:5432/railway
