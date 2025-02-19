@@ -8,7 +8,7 @@ const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { require: true, rejectUnauthorized: false },
     user: "postgres",
-    password: "roadFix2025", // Временно указываем пароль вручную
+    password: process.env.DB_PASSWORD || "roadFix2025", // Используйте переменную окружения для пароля
 });
 
 pool.connect()
