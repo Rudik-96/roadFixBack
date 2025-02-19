@@ -3,29 +3,24 @@ const fetch = require("node-fetch");
 require("dotenv").config();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 const TOKEN = process.env.BOT_TOKEN;
 const API_URL = `https://api.telegram.org/bot${TOKEN}`;
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(`✅ Бот запущен на порту ${PORT}`);
-});
-
 
 app.use(express.json());
 
-// Логирование входящих запросов
+// 🔍 Логирование входящих запросов
 app.use((req, res, next) => {
     console.log(`📥 Запрос: ${req.method} ${req.url}`);
     next();
 });
 
-// Проверка работы сервера
+// ✅ Проверка работы сервера
 app.get("/", (req, res) => {
     res.send("✅ Бот работает!");
 });
 
-// Обработка вебхука Telegram
+// 📌 Обработка вебхука Telegram
 app.post("/webhook", async (req, res) => {
     console.log("📩 Получен апдейт от Telegram:", JSON.stringify(req.body, null, 2));
 
@@ -51,8 +46,11 @@ app.post("/webhook", async (req, res) => {
             });
 
             const data = await response.json();
-            console.log("📤 Ответ Telegram API:", data);
-
+            if (!data.ok) {
+                console.error("❌ Ошибка Telegram API:", data);
+            } else {
+                console.log("📤 Сообщение отправлено:", data);
+            }
         } catch (error) {
             console.error("❌ Ошибка при отправке сообщения:", error);
         }
@@ -61,12 +59,22 @@ app.post("/webhook", async (req, res) => {
     res.sendStatus(200);
 });
 
-// Запуск сервера
+// ✅ Запуск сервера
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`✅ Бот запущен на порту ${PORT}`);
 });
 
-// Обработчик ошибок сервера
+// 🔥 Обработчик ошибок сервера
+process.on("SIGTERM", () => {
+    console.log("⚠️ Получен SIGTERM, сервер завершается...");
+    process.exit(0);
+});
+
+process.on("SIGINT", () => {
+    console.log("⚠️ Получен SIGINT, сервер завершается...");
+    process.exit(0);
+});
+
 process.on("uncaughtException", (err) => {
     console.error("❌ Uncaught Exception:", err);
 });
