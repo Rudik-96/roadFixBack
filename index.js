@@ -15,7 +15,12 @@ app.use((req, res, next) => {
     next();
 });
 
-// 📌 Вебхук теперь работает по `/webhook` (без токена)
+// Проверка работы сервера
+app.get("/", (req, res) => {
+    res.send("✅ Бот работает!");
+});
+
+// Обработка вебхука Telegram
 app.post("/webhook", async (req, res) => {
     console.log("📩 Получен апдейт от Telegram:", JSON.stringify(req.body, null, 2));
 
@@ -50,6 +55,17 @@ app.post("/webhook", async (req, res) => {
 
     res.sendStatus(200);
 });
-// postgresql://postgres:roadFix2025@postgres.railway.internal:5432/railway
-// postgresql://postgres:roadFix2025@postgres.railway.internal:5432/railway
-// postgresql://postgres:roadFix2025@postgres.railway.internal:5432/railway
+
+// Запуск сервера
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`✅ Бот запущен на порту ${PORT}`);
+});
+
+// Обработчик ошибок сервера
+process.on("uncaughtException", (err) => {
+    console.error("❌ Uncaught Exception:", err);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+    console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
+});
