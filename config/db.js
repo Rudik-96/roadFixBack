@@ -5,9 +5,9 @@ console.log("🔌 Подключение к PostgreSQL...");
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    ssl: process.env.DATABASE_URL.includes("railway")
+        ? { require: true, rejectUnauthorized: false }
+        : false
 });
 
 pool.connect()
