@@ -71,3 +71,7 @@ process.on("unhandledRejection", (reason, promise) => {
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`✅ Бот запущен на порту ${PORT}`);
 });
+
+// postgresql://postgres:roadFix2025@postgres.railway.internal:5432/railway
+// postgresql://postgres:roadFix2025@postgres.railway.internal:5432/railway
+// postgresql://postgres:roadFix2025@postgres.railway.internal:5432/railway

@@ -2,12 +2,11 @@ const { Pool } = require("pg");
 require("dotenv").config();
 
 console.log("🔌 Подключение к PostgreSQL...");
+console.log(`🔍 DATABASE_URL из .env: ${process.env.DATABASE_URL}`);
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes("railway")
-        ? { rejectUnauthorized: false }
-        : false
+    ssl: { require: true, rejectUnauthorized: false } // Включаем SSL
 });
 
 pool.connect()
