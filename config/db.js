@@ -6,7 +6,9 @@ console.log(`🔍 DATABASE_URL из .env: ${process.env.DATABASE_URL}`);
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { require: true, rejectUnauthorized: false } // Включаем SSL
+    ssl: { require: true, rejectUnauthorized: false },
+    user: "postgres",
+    password: "roadFix2025", // Временно указываем пароль вручную
 });
 
 pool.connect()
