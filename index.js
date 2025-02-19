@@ -2,6 +2,7 @@ const express = require("express");
 const fetch = require("node-fetch");
 const pool = require("./config/db"); // Подключение к PostgreSQL
 require("dotenv").config();
+console.log("🔍 DATABASE_URL из .env:", process.env.DATABASE_URL);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
