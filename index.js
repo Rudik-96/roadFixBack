@@ -30,7 +30,9 @@ app.get("/", (req, res) => {
 // 📌 Обработка вебхука Telegram
 app.post("/webhook", (req, res) => {
     console.log("📩 Получен апдейт от Telegram:", JSON.stringify(req.body, null, 2));
-    res.status(200).send("OK"); // 📌 Отвечаем сразу, чтобы Telegram не дублировал запросы
+
+    // 📌 Отвечаем сразу, чтобы Telegram не дублировал запросы
+    res.status(200).send("OK");
 
     const update = req.body;
     if (update.message && update.message.text === "/start") {
@@ -71,6 +73,7 @@ app.post("/webhook", (req, res) => {
         console.log("⚠️ Неизвестный тип апдейта:", JSON.stringify(update, null, 2));
     }
 });
+
 
 // ✅ Запуск сервера
 app.listen(PORT, "0.0.0.0", () => {
