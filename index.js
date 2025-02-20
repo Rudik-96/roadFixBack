@@ -1,6 +1,7 @@
 const express = require("express");
 const fetch = require("node-fetch");
 require("dotenv").config();
+const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -8,14 +9,13 @@ const TOKEN = process.env.BOT_TOKEN;
 const API_URL = `https://api.telegram.org/bot${TOKEN}`;
 
 app.use(express.json());
+app.use(cors());
 
-// 🔍 Логирование входящих запросов
 app.use((req, res, next) => {
     console.log(`📥 Запрос: ${req.method} ${req.url}`);
     next();
 });
 
-// ✅ Проверка работы сервера
 app.get("/", (req, res) => {
     res.send("✅ Бот работает!");
 });
