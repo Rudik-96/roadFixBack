@@ -13,7 +13,12 @@ const TOKEN = process.env.BOT_TOKEN;
 const API_URL = `https://api.telegram.org/bot${TOKEN}`;
 
 // 📌 Настройка middlewares
-app.use(express.json()); // Обработка JSON-запросов
+app.use(express.json({
+    verify: (req, res, buf) => {
+        req.rawBody = buf.toString();
+    }
+}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors()); // Разрешаем CORS для всех запросов
 
 // 📌 Логирование запросов
@@ -29,8 +34,7 @@ app.get("/", (req, res) => {
 
 // 📌 Обработка вебхука Telegram
 app.post("/webhook", async (req, res) => {
-    console.log("📩 Заголовки запроса:", JSON.stringify(req.headers, null, 2));
-    console.log("📩 Тело запроса:", req.rawBody);
+    console.log("📩 Получен апдейт от Telegram:", JSON.stringify(req.body, null, 2));
 
     // 📌 Отвечаем сразу, чтобы Telegram не дублировал запросы
     res.status(200).send("OK");
@@ -78,9 +82,6 @@ app.post("/webhook", async (req, res) => {
         console.error("❌ Ошибка в обработке запроса:", error);
     }
 });
-
-
-
 
 // ✅ Запуск сервера
 app.listen(PORT, "0.0.0.0", () => {
