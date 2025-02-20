@@ -28,51 +28,57 @@ app.get("/", (req, res) => {
 });
 
 // 📌 Обработка вебхука Telegram
-app.post("/webhook", (req, res) => {
-    console.log("📩 Получен апдейт от Telegram:", JSON.stringify(req.body, null, 2));
+app.post("/webhook", async (req, res) => {
+    console.log("📩 Заголовки запроса:", JSON.stringify(req.headers, null, 2));
+    console.log("📩 Тело запроса:", req.rawBody);
 
     // 📌 Отвечаем сразу, чтобы Telegram не дублировал запросы
     res.status(200).send("OK");
 
-    const update = req.body;
-    if (update.message && update.message.text === "/start") {
-        const chatId = update.message.chat.id;
+    try {
+        const update = req.body;
+        console.log("🔍 Обработка обновления:", JSON.stringify(update, null, 2));
 
-        const replyMarkup = {
-            inline_keyboard: [[
-                {
-                    text: "🎥 Открыть YouTube",
-                    web_app: {
-                        url: "https://roadfix-c0996.web.app/"
+        if (update.message && update.message.text === "/start") {
+            const chatId = update.message.chat.id;
+
+            const replyMarkup = {
+                inline_keyboard: [[
+                    {
+                        text: "🎥 Открыть YouTube",
+                        web_app: {
+                            url: "https://roadfix-c0996.web.app/"
+                        }
                     }
-                }
-            ]]
-        };
+                ]]
+            };
 
-        fetch(`${API_URL}/sendMessage`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                chat_id: chatId,
-                text: "Нажми на кнопку ниже, чтобы открыть видео 🎬",
-                reply_markup: replyMarkup
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (!data.ok) {
-                    console.error("❌ Ошибка Telegram API:", data);
-                } else {
-                    console.log("📤 Сообщение отправлено:", data);
-                }
-            })
-            .catch(error => {
-                console.error("❌ Ошибка при отправке сообщения:", error);
+            const response = await fetch(`${API_URL}/sendMessage`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: "Нажми на кнопку ниже, чтобы открыть видео 🎬",
+                    reply_markup: replyMarkup
+                })
             });
-    } else {
-        console.log("⚠️ Неизвестный тип апдейта:", JSON.stringify(update, null, 2));
+
+            const data = await response.json();
+            console.log("📤 Ответ от Telegram:", data);
+
+            if (!data.ok) {
+                console.error("❌ Ошибка Telegram API:", data);
+            } else {
+                console.log("📤 Сообщение отправлено:", data);
+            }
+        } else {
+            console.log("⚠️ Неизвестный тип апдейта:", JSON.stringify(update, null, 2));
+        }
+    } catch (error) {
+        console.error("❌ Ошибка в обработке запроса:", error);
     }
 });
+
 
 
 
