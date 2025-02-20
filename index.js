@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 const TOKEN = process.env.BOT_TOKEN;
 const API_URL = `https://api.telegram.org/bot${TOKEN}`;
 
@@ -73,6 +73,7 @@ app.post("/webhook", (req, res) => {
         console.log("⚠️ Неизвестный тип апдейта:", JSON.stringify(update, null, 2));
     }
 });
+
 
 
 // ✅ Запуск сервера
