@@ -28,15 +28,14 @@ app.get("/", (req, res) => {
 });
 
 // 📌 Обработка вебхука Telegram
-app.post("/webhook", async (req, res) => {
+app.post("/webhook", (req, res) => {
     console.log("📩 Получен апдейт от Telegram:", JSON.stringify(req.body, null, 2));
+    res.status(200).send("OK"); // 📌 Отвечаем сразу, чтобы Telegram не дублировал запросы
 
-    // 📌 Проверяем наличие сообщения
     const update = req.body;
     if (update.message && update.message.text === "/start") {
         const chatId = update.message.chat.id;
 
-        // 📌 Создаем кнопку с Web App
         const replyMarkup = {
             inline_keyboard: [[
                 {
@@ -48,33 +47,29 @@ app.post("/webhook", async (req, res) => {
             ]]
         };
 
-        // 📌 Отправляем сообщение в чат
-        try {
-            const response = await fetch(`${API_URL}/sendMessage`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    chat_id: chatId,
-                    text: "Нажми на кнопку ниже, чтобы открыть видео 🎬",
-                    reply_markup: replyMarkup
-                })
+        fetch(`${API_URL}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: "Нажми на кнопку ниже, чтобы открыть видео 🎬",
+                reply_markup: replyMarkup
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.ok) {
+                    console.error("❌ Ошибка Telegram API:", data);
+                } else {
+                    console.log("📤 Сообщение отправлено:", data);
+                }
+            })
+            .catch(error => {
+                console.error("❌ Ошибка при отправке сообщения:", error);
             });
-
-            const data = await response.json();
-            if (!data.ok) {
-                console.error("❌ Ошибка Telegram API:", data);
-            } else {
-                console.log("📤 Сообщение отправлено:", data);
-            }
-        } catch (error) {
-            console.error("❌ Ошибка при отправке сообщения:", error);
-        }
     } else {
         console.log("⚠️ Неизвестный тип апдейта:", JSON.stringify(update, null, 2));
     }
-
-    // 📌 Отвечаем Telegram, чтобы избежать повторных запросов
-    res.status(200).send("OK");
 });
 
 // ✅ Запуск сервера
