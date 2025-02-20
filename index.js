@@ -8,14 +8,17 @@ const PORT = process.env.PORT || 5000;
 const TOKEN = process.env.BOT_TOKEN;
 const API_URL = `https://api.telegram.org/bot${TOKEN}`;
 
-app.use(express.json());
-app.use(cors());
+// 📌 Настройка middlewares
+app.use(express.json()); // Обработка JSON-запросов
+app.use(cors()); // Разрешаем CORS для всех запросов
 
+// 📌 Логирование запросов
 app.use((req, res, next) => {
     console.log(`📥 Запрос: ${req.method} ${req.url}`);
     next();
 });
 
+// 📌 Проверка работоспособности сервера
 app.get("/", (req, res) => {
     res.send("✅ Бот работает!");
 });
@@ -24,16 +27,24 @@ app.get("/", (req, res) => {
 app.post("/webhook", async (req, res) => {
     console.log("📩 Получен апдейт от Telegram:", JSON.stringify(req.body, null, 2));
 
+    // 📌 Проверяем наличие сообщения
     const update = req.body;
     if (update.message && update.message.text === "/start") {
         const chatId = update.message.chat.id;
 
+        // 📌 Создаем кнопку с Web App
         const replyMarkup = {
             inline_keyboard: [[
-                { text: "🎥 Открыть YouTube", web_app: { url: "https://roadfix-c0996.web.app/" } }
+                {
+                    text: "🎥 Открыть YouTube",
+                    web_app: {
+                        url: "https://roadfix-c0996.web.app/"
+                    }
+                }
             ]]
         };
 
+        // 📌 Отправляем сообщение в чат
         try {
             const response = await fetch(`${API_URL}/sendMessage`, {
                 method: "POST",
@@ -54,9 +65,12 @@ app.post("/webhook", async (req, res) => {
         } catch (error) {
             console.error("❌ Ошибка при отправке сообщения:", error);
         }
+    } else {
+        console.log("⚠️ Неизвестный тип апдейта:", JSON.stringify(update, null, 2));
     }
 
-    res.sendStatus(200);
+    // 📌 Отвечаем Telegram, чтобы избежать повторных запросов
+    res.status(200).send("OK");
 });
 
 // ✅ Запуск сервера
@@ -64,7 +78,7 @@ app.listen(PORT, "0.0.0.0", () => {
     console.log(`✅ Бот запущен на порту ${PORT}`);
 });
 
-// 🔥 Обработчик ошибок сервера
+// 🔥 Обработчики ошибок сервера
 process.on("SIGTERM", () => {
     console.log("⚠️ Получен SIGTERM, сервер завершается...");
     process.exit(0);
