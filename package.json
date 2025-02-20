@@ -6,12 +6,12 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.18.2",
     "node-fetch": "^2.6.7",
     "pg": "^8.13.3"
   },
-  "devDependencies": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
