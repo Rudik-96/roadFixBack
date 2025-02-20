@@ -1,7 +1,11 @@
-const express = require("express");
-const fetch = require("node-fetch");
-require("dotenv").config();
-const cors = require("cors");
+// 📌 Импорты ES-модулей
+import express from 'express';
+import fetch from 'node-fetch';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+// 📌 Загрузка переменных окружения
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
